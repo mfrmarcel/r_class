@@ -1,0 +1,390 @@
+---
+title: "R Class - Session 1"
+author: "Ana Oaxaca"
+date: "10/14/2018"
+output: html_document
+---
+
+# Downloading + Installing
+
+### R
+R is an open source statistical language, to make sense of data through computing and graphics. R provides a wide variety of statistical (linear and nonlinear modelling, classical statistical tests, time-series analysis, classification, clustering, …) and graphical techniques, and is highly extensible. 
+
+http://cran.stat.ucla.edu
+
+### R Studio
+RStudio is a free and open-source integrated development environment (IDE) for R, a programming language for statistical computing and graphics. Basically an editor for R.
+
+https://www.rstudio.com/products/rstudio/download/
+
+### Latex
+LaTeX is a high-quality typesetting system; it includes features designed for the production of technical and scientific documentation. LaTeX is the de facto standard for the communication and publication of scientific documents. Think about it as a word processor.
+
+https://www.latex-project.org/get/
+
+### Texmaker + Texshop
+Texmaker is a cross-platform LaTeX editor that integrates many tools needed to develop documents with LaTeX, in just one application. 
+http://www.xm1math.net/texmaker/
+
+https://pages.uoregon.edu/koch/texshop/obtaining.html
+
+# Intro to R 
+
+### Quick Tour
+
+In R Studio, you should see:
+
+1. Upper-left: Program editor window, where you’ll write code.
+2. Lower-left: Console, where you’ll submit commands to be executed.
+3. Upper-right: Workspace lists variables in memory, History lists the commands you’ve previously submitted in the console.
+4. Lower-right: Files in current working directory, Plots you’ve produced, Packages installed and whether they’re loaded, Help on commands.
+
+Keyboard Shortcuts: 
+
+* Ctrl-Enter (submit current line or selection from editor window to console) Ctrl-1 (move cursor to editor window)*
+* Ctrl-2 (move cursor to console)*
+* Ctrl-6 (move cursor to plots)*
+* Esc (interrupt currently executing command) Ctrl-L (clear console)*
+
+An exhaustive list:
+
+https://support.rstudio.com/hc/en-us/articles/200711853-Keyboard-Shortcuts
+
+**Workflow** is how you get things done. Here’s my recommendation:
+
+1. Work out commands in the editor, then copy/paste into console or better use Ctrl-Enter to submit current line or selection.
+2. Your editor will keep a history of what you’ve done.
+3. Make comments to help your future-self recall why you did what you did.
+
+### R Building Blocks
+```{r setup, echo=F}
+knitr::opts_chunk$set(warning = F)
+knitr::opts_chunk$set(message = F)
+knitr::opts_chunk$set(echo = T)
+knitr::opts_chunk$set(eval = F)
+
+```
+
+#### R as a calculator 
+In the following sections, look at the commands and output
+and understand how the command was interpretted to give the output.
+
+```{r}
+#### Calculator # Arithmetic
+2 * 10
+## [1] 20
+
+1 + 2
+## [1] 3
+
+# Order of operations is preserved
+1 + 5 * 10
+
+## [1] 51
+(1 + 5) * 10
+## [1] 60
+
+# Exponents use the ^ symbol
+2^5
+## [1] 32
+
+9^(1/2)
+## [1] 3
+```
+
+#### Vectors
+A vector is a set of numbers like a column of a spreadsheet. Below these sets of numbers are not technically “vectors”, since they are not in a row/column structure, though they are ordered and can be referred to by index.
+
+```{r}
+#### Vectors
+# Create a vector with the c (short for combine) function 
+c(1, 4, 6, 7)
+## [1] 1 4 6 7
+
+c(1:5, 10)
+## [1]  1  2  3  4  5 10
+
+# or use a function
+# (seq is short for sequence) 
+seq(1, 10, by = 2)
+## [1] 1 3 5 7 9
+
+seq(0, 50, length = 11)
+## [1] 0 5101520253035404550
+seq(1, 50, length = 11)
+## [1] 1.0 5.9 10.8 15.7 20.6 25.5 30.4 35.3 40.2 45.1 50.0 1:10 
+# short for 
+
+seq(1, 10, by = 1) # or just
+## [1] 1 2 3 4 5 6 7 8 9 10
+
+seq(1, 10)
+## [1] 1 2 3 4 5 6 7 8 9 10
+
+5:1
+## [1] 5 4 3 2 1
+
+# non-integer sequences
+# (Note: the [1] at the beginning of lines indicates # the index of the first value in that row) 
+seq(0, 100*pi, by = pi)
+##   [1]   0.000000   3.141593   6.283185   9.424778  12.566371
+##   [6]  15.707963  18.849556  21.991149  25.132741  28.274334
+##  [11]  31.415927  34.557519  37.699112  40.840704  43.982297
+##  [16]  47.123890  50.265482  53.407075  56.548668  59.690260
+##  [21]  62.831853  65.973446  69.115038  72.256631  75.398224
+##  [26]  78.539816  81.681409  84.823002  87.964594  91.106187
+##  [31]  94.247780  97.389372 100.530965 103.672558 106.814150
+##  [36] 109.955743 113.097336 116.238928 119.380521 122.522113
+##  [41] 125.663706 128.805299 131.946891 135.088484 138.230077
+##  [46] 141.371669 144.513262 147.654855 150.796447 153.938040
+##  [51] 157.079633 160.221225 163.362818 166.504411 169.646003
+##  [56] 172.787596 175.929189 179.070781 182.212374 185.353967
+##  [61] 188.495559 191.637152 194.778745 197.920337 201.061930
+##  [66] 204.203522 207.345115 210.486708 213.628300 216.769893
+##  [71] 219.911486 223.053078 226.194671 229.336264 232.477856
+##  [76] 235.619449 238.761042 241.902634 245.044227 248.185820
+##  [81] 251.327412 254.469005 257.610598 260.752190 263.893783
+##  [86] 267.035376 270.176968 273.318561 276.460154 279.601746
+##  [91] 282.743339 285.884931 289.026524 292.168117 295.309709
+##  [96] 298.451302 301.592895 304.734487 307.876080 311.017673
+## [101] 314.159265
+```
+
+#### Variables 
+Assigning objects to varibles.
+
+```{r}
+#### Assign variables
+# Assign a vector to a variable with <- 
+a <- 1:5
+a
+## [1] 1 2 3 4 5
+
+b <- seq(15, 3, length = 5)
+b
+##[1]15 12 9 6 3
+
+c <- a * b 
+c
+## [1] 15 24 27 24 15
+
+```
+
+
+#### Basic functions
+There are lots of functions available in the base package. Type ?base and click on Index at the bottom of the help page for a complete list of functions in base R. 
+
+```{r}
+#### Basic functions
+# Lots of familiar functions work 
+a
+## [1] 1 2 3 4 5
+
+sum(a)
+## [1] 15
+
+prod(a)
+## [1] 120
+
+mean(a)
+## [1] 3
+
+sd(a)
+## [1] 1.581139
+
+var(a)
+## [1] 2.5
+
+min(a)
+## [1] 1
+
+median(a)
+## [1] 3
+
+max(a)
+## [1] 5
+
+range(a)
+## [1] 1 5
+```
+
+#### Extracting Subsets
+It will be an extremely important skill to understand the structure of your variables and pull out the information you need from them.
+
+```{r}
+#### Extracting subsets
+# Specify the indices you want in the square brackets []
+a <- seq(0, 100, by = 10)
+a
+##[1] 0 10 20 30 40 50 60 70 80 90 100
+
+a[] # blank = include all
+##[1] 0 10 20 30 40 50 60 70 80 90 100
+
+# integer + = include, 0 = include none, - = exclude
+a[5]
+## [1] 40
+
+a[c(2, 4, 6, 8)]
+## [1] 10 30 50 70
+
+a[0]
+## numeric(0)
+
+a[-c(2, 4, 6, 8)]
+##[1] 0 20 40 60 80 90 100
+
+a[c(1, 1, 1, 6, 6, 9)] # subsets can be bigger than the original set
+##[1] 0 0 0 50 50 80
+
+a[c(1,2)] <- c(333, 555) # update a subset
+a
+## [1]333 555 20 30 40 50 60 70 80 90 100
+```
+
+
+#### Boolean
+True/False Subsets can be selected based on which elements meet specific conditions.
+
+```{r}
+#### Boolean
+a
+## [1]333 555 20 30 40 50 60 70 80 90 100
+
+(a > 50) # TRUE/FALSE for each element
+## [1] TRUE TRUE FALSE FALSE FALSE FALSE TRUE TRUE TRUE TRUE TRUE 
+
+which(a > 50) # which indicies are TRUE
+## [1] 1 2 7 8 9 10 11
+
+a[(a > 50)]
+##[1]333555 60 70 80 90 100
+
+!(a > 50) # ! negates (flips) TRUE/FALSE values
+## [1] FALSE FALSE TRUE TRUE TRUE TRUE FALSE FALSE FALSE FALSE FALSE 
+
+a[!(a > 50)]
+## [1] 20 30 40 50
+```
+
+### Comparison functions
+All your favorite comparisons are available.
+```{r}
+#### Comparison
+#Here they are: < > <= >= != == %in% 
+a
+## [1]333555 20 30 40 50 60 70 80 90 100
+
+# equal to
+a[(a == 50)]
+## [1] 50
+
+# equal to
+a[(a == 55)]
+
+## numeric(0)
+# not equal to
+a[(a != 50)]
+## [1]333555 20 30 40 60 70 80 90100
+
+# greater than
+a[(a > 50)]
+##[1]333555 60 70 80 90 100
+
+# less than
+a[(a < 50)]
+## [1] 20 30 40
+
+# less than or equal to
+a[(a <= 50)]
+## [1] 20 30 40 50
+
+  # which values on left are in the vector on right
+(c(10, 14, 40, 60, 99) %in% a)
+## [1] FALSE FALSE  TRUE  TRUE FALSE
+```
+
+#### Boolean operators 
+Compare TRUE/FALSE values and return TRUE/- FALSE values.
+```{r}
+#### Boolean
+# & and, | or, ! not 
+a
+## [1]333 555 20 30 40 50 60 70 80 90 100 
+
+a[(a >= 50) & (a <= 90)]
+## [1] 50 60 70 80 90
+
+a[(a < 50) | (a > 100)]
+##[1]333555 20 30 40
+
+a[(a < 50) | !(a > 100)]
+## [1] 20 30 40 50 60 70 80 90 100 
+
+a[(a >= 50) & !(a <= 90)]
+## [1] 333 555 100
+```
+
+#### Missing values 
+The value NA (not available) means the value is missing. Any calculation involving NA will return an NA by default.
+
+```{r}
+#### Missing values
+NA + 8
+## [1] NA
+
+3 * NA
+## [1] NA
+
+mean(c(1, 2, NA))
+## [1] NA
+
+# Many functions have an na.rm argument  (NA remove)
+mean(c(NA, 1, 2), na.rm = TRUE)
+## [1] 1.5
+
+sum(c(NA, 1, 2))
+## [1] NA
+
+sum(c(NA, 1, 2), na.rm = TRUE)
+## [1] 3
+
+# Or you can remove them yourself
+a <- c(NA, 1:5, NA)
+a
+## [1] NA 1 2 3 4 5 NA
+
+is.na(a) # which values are missing?
+## [1] TRUE FALSE FALSE FALSE FALSE FALSE TRUE
+
+!is.na(a) # which values are NOT missing?
+## [1] FALSE TRUE TRUE TRUE TRUE TRUE FALSE 
+
+a[!is.na(a)] # return those which are NOT missing
+## [1] 1 2 3 4 5
+
+a # note, this did not change the variable 
+## [1] NA 1 2 3 4 5 NA
+
+# To save the results of removing the NAs,
+# assign to another variable or reassign to the original variable
+# Warning: if you write over variable a then the original version is gone forever!
+a <- a[!is.na(a)]
+a
+## [1] 1 2 3 4 5
+```
+
+ 
+### R command review
+This is a summary of the commands we’ve seen so far.
+```{r}
+#### Review
+<-
++-*/^
+c()
+seq() # by=, length=
+sum(), prod(), mean(), sd(), var(), min(), median(), max(), range() a[]
+(a > 1), ==, !=, >, <, >=, <=, %in% &, |, !
+NA, mean(a, na.rm = TRUE), !is.na()
+
+````

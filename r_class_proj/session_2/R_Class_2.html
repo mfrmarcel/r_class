@@ -306,12 +306,12 @@ num_vect1 + num_vect2</code></pre>
 <h1>Matrices and dataframes</h1>
 <p>Datasets in R are formulated in an <span class="math inline">\(n \times k\)</span> format, just like matrices. They are constructed of rows and columns. But there are differences between <em>matrices</em>, and <em>dataframes</em>, the subtleties and distinctions we will discuss.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ── Attaching packages ──────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.0.0     ✔ readr   1.1.1
 ## ✔ tibble  1.4.2     ✔ purrr   0.2.5
 ## ✔ tidyr   0.8.1     ✔ dplyr   0.7.6
 ## ✔ ggplot2 3.0.0     ✔ forcats 0.3.0</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(dplyr)
@@ -737,8 +737,8 @@ vect_storage</code></pre>
 <pre class="r"><code># There are various apply functions that work for lists and vectors
 # e.g lapply() and vapply()</code></pre>
 </div>
-<div id="working-with-real-data" class="section level1">
-<h1>Working with real data</h1>
+<div id="first-cut-at-working-with-real-data" class="section level1">
+<h1>First Cut at working with real data</h1>
 <p>You need to set your working directory first:</p>
 <ul>
 <li><p>Save your script to a directory and set the working directory (Top Bar: Session &gt; To Source File Location)</p></li>
@@ -791,6 +791,48 @@ wt_dta$shoe_wt = wt_dta$shoe / wt_dta$wt
 mean(wt_dta$shoe_wt)</code></pre>
 <pre><code>## [1] 0.05109582</code></pre>
 <pre class="r"><code>wt_dta = wt_dta %&gt;% mutate(shoe_wt = shoe / wt)</code></pre>
+<div id="assignment" class="section level3">
+<h3>Assignment</h3>
+<pre class="r"><code># 1) Generate a new dataset that is the same as the weight/shoe size 
+# data but only includes people with blonde hair (show that you can 
+# subset the data in two ways: a) Using the indices, b) Using the 
+# filter() command in dplyr with the %&gt;% operator) 
+
+
+
+
+
+# 2) Generate a new variable that is weight and shoe size multiplied
+# by one another (use the dplyr %&gt;% operator and mutate() function for 
+# this problem)
+
+
+
+
+
+
+# 3) Take the mean of the new variable for people with black hair 
+
+
+
+
+
+# 4) Take the mean of the new variable for people with blonde hair 
+
+
+
+
+
+# 5) Do 3 and 4 but derive the median instead 
+
+
+
+
+
+# 6) Take the original data, group by hair color, and generate a new &quot;by-group&quot;
+# dataset with the mean shoe size and weight of each hair color group. Use 
+# the dplyr %&gt;% operator, group_by(), and summarize() functions. </code></pre>
+</div>
 </div>
 
 

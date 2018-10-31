@@ -1,0 +1,523 @@
+---
+title: "R Class #2"
+author: "Marcel Roman"
+date: "10/30/2018"
+output: html_document
+---
+
+# Taking a step back --- learning about different types of vectors 
+
+There are different types of vectors/data/variables, and these types possess different properties that matter for inference and estimation. 
+
+ * **Character Vectors/Variables:** These are variables/vectors that are like characters. For instance, a character vector may have five different elements, "hello", "my," "name," "is," "marcel," which could be expressed as \{"hello", "my", "name", "is", "marcel"\}. When functions are run over character vectors, they are typically transformed into factor categories, where the estimates are comparisons between different categories. Think of the classic race variable, which could be expressed as a character variable, \{"black", "white", "asian", "latinx", "other"\}. 
+
+ * **Factor Vector/Variables:** These may look like character variables/vectors in $\mathbb{R}$, but they are considered "categories", that are latently expressed as numbers but the order does not have any bearing on the meaning of the way the variable is measured itself. The details of how this works will be hammered out when we work with this type of data. 
+
+ * **Numeric Vector/Variables:** These are just numbers, e.g. \{1, 2, 3, 4, 5\} is a 5 element vector containing the elements 1, 2, 3, 4, and 5. 
+ 
+Let's break these down with some code. 
+
+### Character Vectors 
+
+```{r}
+
+# install.packages('stringr')
+
+library(stringr)
+
+# Character vectors 
+
+char_vect1 = c('black', 'latinx', 'white', 'asian')
+char_vect2 = c('male', 'female', 'trans', 'non-binary')
+
+# You can't run certain functions over character vectors like 
+# you could with numeric vectors. For example, if we decided
+# to take the average of a character vector, you receive an 
+# error
+
+mean(char_vect1)
+
+# But there are other functions that are made specifically 
+# for manipulating character vectors, for instance, the 
+# paste() function 
+
+output_char1 = paste(char_vect1, char_vect2, sep = '/')
+output_char1
+
+output_char2 = paste(char_vect1, char_vect2, collapse = '|')
+output_char2
+
+# How many elements does output_char1 have? How many elements 
+# does output_char2 have? 
+
+length(output_char1)
+length(output_char2)
+
+# There are also some interesting manipulations you can run 
+# using base R and the stringr package
+
+toupper(char_vect1)
+toupper(char_vect2)
+
+tolower(toupper(char_vect1))
+tolower(toupper(char_vect2))
+
+str_to_upper(char_vect1)
+str_to_upper(char_vect2)
+
+# Say you want a 12 character element for all elements involved padded
+# with zeros (leading zeros)
+
+str_pad(string = char_vect1, width = 12, side = 'left', pad = '0')
+str_pad(string = char_vect2, width = 12, side = 'left', pad = '0')
+
+# Say you want to substring to the first three characters of the 
+# elements
+
+substring(char_vect1, 1, 3)
+substring(char_vect2, 1, 3)
+
+# Okay, now what if we want to choose elements from the vector
+# on the basis of a string pattern? Use the grep function, 
+# which is INCREDIBLY HANDY! 
+
+  # Value version --- outputs character
+
+grep(x = char_vect1, pattern = 'black', value = TRUE)
+
+  # Index version --- outputs numeric index
+
+grep(x = char_vect1, pattern = 'black', value = FALSE)
+char_vect1[grep(x = char_vect1, pattern = 'black', value = FALSE)]
+
+# What if we want to replace parts of a character vector based on 
+# some sort of pattern? 
+
+char_vect1_a = paste(char_vect1, 'person')
+
+# Let's replace person with "individual"
+
+gsub(x = char_vect1_a, pattern = 'person',
+     replacement = 'individual')
+
+# Also useful for removing whitespace
+
+gsub(x = char_vect1_a, pattern = ' ', replacement = '')
+
+
+# For more on character manipulation, see 
+
+# https://www.gastonsanchez.com/Handling_and_Processing_Strings_in_R.pdf
+
+
+```
+
+### Factor Vectors 
+
+```{r}
+
+# Factor variables are a little weird, so let's try to construct 
+# one from scratch. 
+
+fact_vect = c(1, 2, 3, 4, 5)
+fact_vect = factor(fact_vect, labels = c('white', 'black', 'latinx', 
+                             'asian', 'other'))
+
+# What happens when you convert a factor?
+
+as.numeric(fact_vect)
+as.numeric(as.character(fact_vect))
+
+# You can exclude pieces of a factor variable 
+
+factor(fact_vect, exclude = 'latinx')
+
+# Remember, factors have reference categories, which you can check 
+# with the levels() function --- the first level is the reference
+
+levels(fact_vect)
+
+# You can "relevel" the reference category
+
+relevel(x = fact_vect, ref = 'latinx')
+
+```
+
+### Numeric Vectors 
+
+```{r}
+
+# Numeric Vectors 
+
+num_vect1 = c(1, 2, 3, 4, 5)
+num_vect2 = c(11, 12, 13, 14, 15)
+
+# We can run functions on numeric vectors
+
+mean(num_vect1)
+mean(num_vect2)
+
+log(num_vect1)
+log(num_vect2)
+
+# If numeric vectors have the same number of elements, we can pass 
+# mathematical operations on them such as addition, subtraction, 
+# division, multiplication, etc. 
+
+num_vect1 + num_vect2
+
+num_vect1 - num_vect2
+
+num_vect1 / num_vect2
+
+num_vect1 * num_vect2
+
+```
+
+Mathematical operations with numeric vectors are conducted *element-wise* --- that is, the first element in the first vector, $X_{i}$ is multiplied/added to/subtracted from/divided by the first element in the second vector, $Y_{i}$, and so on and so forth. 
+
+# Matrices and dataframes
+
+Datasets in R are formulated in an $n \times k$ format, just like matrices. They are constructed of rows and columns. But there are differences between *matrices*, and *dataframes*, the subtleties and distinctions we will discuss. 
+
+
+```{r}
+
+library(tidyverse)
+library(dplyr)
+
+# Let's construct a matrix from scratch
+
+set.seed(2317)
+
+norm_vect = rnorm(10)
+race_vect = c('black', 'black', 'white', 'asian', 'asian',
+              'asian', 'latinx', 'black', 'white', 'black')
+norm_vect2 = rnorm(10, 3)
+
+mat = cbind(norm_vect, norm_vect2, race_vect)
+
+# Now let's analyze the properties of this matrix
+
+  # Weirdness because the cbind() function made our numeric vectors
+  # into characters
+
+str(mat)
+glimpse(mat)
+
+# You could also generate a matrix via the matrix() function, but 
+# it doesn't fix the character problem 
+
+matrix(c(norm_vect, norm_vect2, race_vect), nrow = 10, ncol = 3)
+
+# You can select rows and columns or elements within rows and 
+# columns on the index using []
+
+mat[1, ]
+mat[, 1]
+mat[, 3]
+
+mat[1, 1]
+mat[1, 3]
+
+# Okay, so let's try to fix the fact that our matrix has some 
+# character vectors 
+
+mat[, 1] = as.numeric(mat[, 1])
+mat[, 2] = as.numeric(mat[, 2])
+
+mat = cbind(norm_vect, norm_vect2, race_vect)
+mat[, 1:2] = apply(X = mat[, 1:2], 2, function(x) as.numeric(x))
+
+# Problem: Any non-numeric vector will force the matrix to be character
+
+mat2 = cbind(apply(X = mat[, 1:2], 2, function(x) as.numeric(x)),
+      norm_vect)
+
+# We can apply functions over columns 
+
+mean(mat2[, 1])
+mean(mat2[, 2])
+mean(mat2[, 3])
+
+# We can apply functions over rows
+
+mean(mat2[1, ])
+
+# Matrix properties apply --- addition 
+
+mat3 = cbind(rnorm(10, 5), rnorm(10, 3, 2), rnorm(8, 2, 1))
+
+mat2 + mat3
+
+# Subtraction
+
+mat2 - mat3
+
+# Multiplication (element wise)
+
+mat2 * mat3
+
+# Division (which will occur element wise)
+
+mat2 / mat3
+
+# Multiplication (matrix algebra)
+
+# mat2 %*% mat3
+
+mat2 %*% t(mat3)
+
+
+# Let's convert our original matrix into a dataframe
+
+df1 = as.data.frame(cbind(norm_vect, norm_vect2, race_vect))
+
+# DFs are nice because we can call column-wise vectors easily 
+
+df1$norm_vect
+df1$norm_vect2
+df1$race_vect
+
+# We can also convert select variables without problems 
+
+df1$norm_vect = as.numeric(as.character(df1$norm_vect))
+df1$norm_vect2 = as.numeric(as.character(df1$norm_vect2))
+df1$race_vect = as.character(df1$race_vect)
+
+str(df1)
+glimpse(df1)
+
+
+# These kind of behave in similar ways as matrices, 
+# but they're not matrices
+
+df1$norm_vect * df1$norm_vect2
+df1$norm_vect / df1$norm_vect2
+df1$norm_vect + df1$norm_vect2
+df1$norm_vect - df1$norm_vect2
+
+# df1$race_vect * df1$norm_vect2
+
+# You can run several manipulations on dataframes 
+
+colnames(df1) = c('var1', 'var2', 'race')
+
+# You can generate new vectors quite easily 
+
+df1$var3 = NA
+df1$var3 = df1$var1 * 3
+
+df1$var4 = NA
+df1$var4 = df1$var1 / df1$var2
+
+# An aside, you can call by variable name 
+
+df1[, 'var1']
+df1[, 'race']
+
+# You can also use various dplyr functions on dataframes 
+
+df1_a = df1 %>% mutate(var5 = var2 * var3) %>% 
+  rename(first_var = var1) %>% 
+  mutate(race = recode(race, `black` = 'b', `white` = 'w',
+                       `asian` = 'a', `latinx` = 'l'))
+
+df1_b = df1_a %>% filter(race == 'b')
+
+# Think of dplyr as running functions through a filter, or 
+# "pipe", %>% 
+
+
+```
+
+### Lists 
+
+Lists are all-purpose $\mathbb{R}$ objects which can contain elements of almost anything: numbers, strings, vectors, another list inside of it, dataframes and matrices. So they're quite flexible and useful for storing various $\mathbb{R}$ objects you may want to use for whichever purpose. 
+
+```{r}
+
+# Let's create a list 
+
+list_data = list('One', 'Two', c(30, 25, 25), TRUE, 51.3281, 88.1354)
+list_data
+
+# Lists are indexed a little differently 
+
+list_data[[3]]
+
+# You can put an entire dataframe in a list 
+
+list_data[[6]] = df1
+list_data[[6]]
+
+# Elements within elements in a list 
+
+list_data[[3]][3]
+
+list_data[[6]]$var1
+
+list_data[6]
+
+# Resource, see here for more on lists:
+# https://www.tutorialspoint.com/r/r_lists.htm
+
+```
+
+# Functions 
+
+You can generate functions in $\mathbf{R}$. Remember the structure of functions, they are made up of parameters. These parameters will be feed into a process that constitutes the function. Let's see how this works in practice. 
+
+```{r}
+
+# Let's say we wanted a simple function that takes a scalar object and # adds two to it 
+
+x = 2 
+
+add_2 = function(x) {
+  
+  x + 2
+  
+}
+
+add_2(x)
+
+# Lets change the input 
+
+newinput = 312381
+add_2(newinput)
+
+# Now let's see if a vector will work? 
+
+newinput2 = c(1, 2, 3, 4, 5)
+add_2(newinput2)
+
+# Functions can be complicated. Let's say we wanted a function that will give us TRUE if the number is negative, FALSE if the number is positive. Then we want to employ an if else condition. 
+
+newf2 = function(x) { 
+  
+  if (x >= 0) {
+    
+    print(TRUE)
+    
+  } else {
+    
+    print(FALSE)
+    
+  }
+  
+}
+
+x = 2
+y = 0
+z = -5
+
+newf2(x)
+newf2(y)
+newf2(z)
+
+```
+
+
+# Loops 
+
+You can also generate loops. This allows you to iterate a process over a series of indices to serve some purpose. For instance, what if I wanted to get the means of the columns of a dataframe and store those means into a single vector? Here's where loops come into play: 
+
+
+```{r} 
+
+set.seed(3128731)
+
+dat = as.data.frame(cbind(
+  rnorm(1000), rnorm(1000), rnorm(1000), rnorm(1000), rnorm(1000),
+  rnorm(1000), rnorm(1000), rnorm(1000), rnorm(1000), rnorm(1000)
+))
+
+# Theoretically I could take the average of each row and plug it into
+# a vector
+
+vect_storage = rep(NA, 10)
+vect_storage[1] = mean(dat$V1)
+vect_storage[2] = mean(dat$V2)
+vect_storage[3] = mean(dat$V3)
+vect_storage[4] = mean(dat$V4)
+vect_storage[5] = mean(dat$V5)
+vect_storage[6] = mean(dat$V6)
+vect_storage[7] = mean(dat$V7)
+vect_storage[8] = mean(dat$V8)
+vect_storage[9] = mean(dat$V9)
+vect_storage[10] = mean(dat$V10)
+
+# But this is alot of code. Let's reduce the amount of code we need
+
+reps = 10 
+vect_storage = rep(NA, 10)
+for (i in 1:reps) {
+  
+  vect_storage[i] = mean(dat[, i])
+  
+}
+
+# You could also use the apply function
+
+vect_storage = as.numeric(apply(X = dat, MARGIN = 2, FUN = mean))
+vect_storage
+
+# There are various apply functions that work for lists and vectors
+# e.g lapply() and vapply()
+
+
+```
+
+# Working with real data
+
+
+You need to set your working directory first: 
+
+* Save your script to a directory and set the working directory (Top Bar: Session > To Source File Location)
+
+* Generate a project directory, and work from there without having to set the working directory. 
+
+
+```{r} 
+
+library(foreign)
+library(haven)
+
+# Importing the data --- it is a .dta extension file, so we need 
+# to use the appropriate read function
+
+wt_dta = read_stata('weight_data.dta')
+
+wt_dta = as.data.frame(wt_dta)
+
+# Looking at the data 
+
+glimpse(wt_dta)
+
+# We can do some simple analysis 
+
+mean(wt_dta$wt[wt_dta$hair == 'BLACK'])
+mean(wt_dta$wt[wt_dta$hair == 'BLONDE'])
+mean(wt_dta$wt[wt_dta$hair == 'BROWN'])
+
+# 
+
+mean(wt_dta$shoe[wt_dta$hair == 'BLACK'])
+mean(wt_dta$shoe[wt_dta$hair == 'BLONDE'])
+mean(wt_dta$shoe[wt_dta$hair == 'BROWN'])
+
+# Blonde vs. everyone else
+
+mean(wt_dta$shoe[wt_dta$hair == 'BLONDE'])
+mean(wt_dta$shoe[wt_dta$hair == 'BLACK' | wt_dta$hair == 'BROWN'])
+
+# We can generate new variables
+
+wt_dta$shoe_wt = wt_dta$shoe / wt_dta$wt
+mean(wt_dta$shoe_wt)
+wt_dta = wt_dta %>% mutate(shoe_wt = shoe / wt)
+
+```
+
+

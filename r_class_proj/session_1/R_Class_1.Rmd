@@ -44,7 +44,8 @@ Keyboard Shortcuts:
 * Ctrl-Enter (submit current line or selection from editor window to console) Ctrl-1 (move cursor to editor window)*
 * Ctrl-2 (move cursor to console)*
 * Ctrl-6 (move cursor to plots)*
-* Esc (interrupt currently executing command) Ctrl-L (clear console)*
+* Esc (interrupt currently executing command)
+* Ctrl-L (clear console)
 
 An exhaustive list:
 
@@ -58,7 +59,8 @@ https://support.rstudio.com/hc/en-us/articles/200711853-Keyboard-Shortcuts
 
 ### R Building Blocks
 ```{r setup, echo=F}
-knitr::opts_chunk$set(warning = F)
+
+knitr::opts_chunk$set(warning = F) 
 knitr::opts_chunk$set(message = F)
 knitr::opts_chunk$set(echo = T)
 knitr::opts_chunk$set(eval = F)
@@ -388,3 +390,5 @@ sum(), prod(), mean(), sd(), var(), min(), median(), max(), range() a[]
 NA, mean(a, na.rm = TRUE), !is.na()
 
 ````
+
+

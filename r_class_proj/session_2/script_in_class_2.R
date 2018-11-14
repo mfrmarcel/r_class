@@ -21,7 +21,6 @@ library(tidyverse)
 #### Character Vectors ####
 
 # Let's generate some character vectors 
-
 char_vect1 = c('black', 'latinx', 'white',
                'asian')
 char_vect2 = c('male', 'female', 'trans',
@@ -249,12 +248,12 @@ race_vect = c('black', 'black', 'white', 'asian',
               'asian', 'asian', 'latinx',
               'black', 'white', 'black')
 norm_vect2 = rnorm(n = 10, mean = 3)
-norm_vect2[5]
+
 
 mat = cbind(norm_vect, norm_vect2, race_vect)
 mat_rbind = rbind(norm_vect, norm_vect2, race_vect)
 
-# Lets look at the propertise of the matrix
+# Lets look at the properties of the matrix
 
 str(mat)
 glimpse(mat)
@@ -278,6 +277,136 @@ mat[1, 1]
 
 mat[1, 3]
 
+# Let's try to fix the fact that our matrix has some
+# charactar vectors 
 
+mat[, 1] = as.numeric(mat[, 1])
+mat[, 2] = as.numeric(mat[, 2])
 
+mat[, 1:2] = apply(X = mat[, 1:2], MARGIN = 2,
+      FUN = function(x) as.numeric(x))
 
+# Problem: Any non-numeric vector in a matrix will 
+# force the matrix to have all its columns 
+# be character vectors
+
+mat2 = apply(X = mat[, 1:2], MARGIN = 2,
+             FUN = function(x) as.numeric(x))
+
+# We can apply functions over columns
+
+mean(mat2[, 1])
+
+mean(mat2[, 2])
+
+# We can also apply functions over rows
+
+mean(mat2[1, ])
+median(mat2[1, ])
+range(mat2[1, ])
+
+# Matrix properties apply --- addition.
+
+mat3 = cbind(rnorm(10, 5), rnorm(10, 3, 2),
+             rnorm(10, 2, 1))
+mat2 = cbind(mat2, norm_vect)
+
+mat2 + mat3 
+mat2 - mat3 
+
+# Multiplication (element wise)
+
+mat2 * mat3
+
+# Division (element wise)
+
+mat2 / mat3
+
+# Multiplication (matrix algebra sense)
+# %*% %*% 
+
+mat2 %*% mat3 
+
+mat2 %*% t(mat3)
+
+# Let's work with a different kind of object
+# DATAFRAMES! 
+
+df1 = as.data.frame(
+  cbind(norm_vect, norm_vect2, race_vect),
+  stringsAsFactors = FALSE
+)
+
+# DFs are nice because we can call column-wise 
+# vectors easily 
+
+df1$norm_vect
+df1$norm_vect2
+df1$race_vect
+
+class(df1$norm_vect)
+class(df1$norm_vect2)
+class(df1$race_vect)
+
+df1$norm_vect = as.numeric(df1$norm_vect)
+df1$norm_vect2 = as.numeric(df1$norm_vect2)
+
+# install.packages('tibble')
+# library(tibble)
+
+str(df1)
+glimpse(df1)
+
+# Although dataframes behave in similar ways 
+# as matrices and have a simialr structure, they're
+# not matrices
+
+df1$norm_vect * df1$norm_vect2
+df1$norm_vect / df1$norm_vect2
+df1$norm_vect + df1$norm_vect2
+df1$norm_vect - df1$norm_vect2
+
+# You can run a bunch of different manipulations 
+# on dataframes 
+
+colnames(df1) = c('var1', 'var2', 'race')
+
+# You can also generate new variables/vectors/columns
+# quite easily with the dataframe framework 
+
+df1$var3 = NA 
+df1$var3 = df1$var1 * 3 
+
+df1$var4 = NA
+df1$var4 = df1$var1 / df1$var2
+
+# As an aside, you can call by variable name 
+
+df1[, c('var1', 'var2', 'var3')]
+df1[, 'race']
+
+# You can also use various dplyr functions on 
+# dataframes 
+
+# library(dplyr) 
+
+# DPLYR VERSION
+
+df1_a = df1 %>% mutate(var5 = var2 * var3) %>% 
+  rename(first_var = var1) %>% 
+  mutate(race = recode(race, `black` = 'b',
+                       `white` = 'w', 
+                       `asian` = 'a',
+                       `latinx` = 'l'))
+
+# BASE R VERSION
+
+df1_a_base = df1
+
+df1_a_base$var5 = NA
+df1_a_base$var5 = df1_a_base$var2 * df1_a_base$var3
+colnames(df1_a_base)[1] = 'first_var'
+df1_a_base$race[df1_a_base$race == 'black'] = 'b'
+df1_a_base$race[df1_a_base$race == 'white'] = 'w'
+df1_a_base$race[df1_a_base$race == 'asian'] = 'a'
+df1_a_base$race[df1_a_base$race == 'latinx'] = 'l'

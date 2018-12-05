@@ -410,3 +410,111 @@ df1_a_base$race[df1_a_base$race == 'black'] = 'b'
 df1_a_base$race[df1_a_base$race == 'white'] = 'w'
 df1_a_base$race[df1_a_base$race == 'asian'] = 'a'
 df1_a_base$race[df1_a_base$race == 'latinx'] = 'l'
+
+#### Lists #### 
+
+# Lists are all purpose R objects which can contain 
+# elements of almost anything: numbers, strings, vectors, 
+# another list, dataframes and matrices. Cool because 
+# they're flexible and useful for storing various R objects 
+# you may want to use. For whatever purpose. 
+
+list_data = list('One', 'Two', c(30, 25, 25),
+                 TRUE, 51.3281, 88.1354)
+list_data
+
+# Learning how to call from a list index 
+
+list_data[[3]]
+
+# Calling elements within elements 
+
+list_data[[3]][3]
+list_data[[3]][1]
+
+# You can insert entire dataframes into lists 
+
+list_data[[6]] = df1
+list_data[[6]]
+
+# Calling from an item in a list that is a 
+# dataframe 
+
+list_data[[6]][3, ]
+list_data[[6]][, 3]
+list_data[[6]]$race
+list_data[[6]]$var1
+list_data[[6]]$var2
+list_data[[6]]$var3
+
+# Single brackets allow you to subset lists
+# recursively 
+
+list_data[[1:3]]
+list_data[1:3][[3]][1]
+
+# Resource: 
+# https://www.tutorialspoint.com/r/r_lists.htm
+
+#### Functions #### 
+
+# In R, you can generate your own functions. 
+# We've already seen some functions in practice.
+# For example, the mean() function. 
+
+# Let's say we wanted a simple function that takes 
+# a scalar object and # adds two to it. 
+
+x = 2
+
+add_2 = function(param) { 
+    
+  param + 2 
+  
+}
+
+add_2(param = x)
+add_2(param = 10)
+add_2(param = 157)
+add_2(param = 312381)
+
+# Now, let's see if a vector works 
+
+newinput2 = c(1, 2, 3, 4, 5)
+add_2(param = newinput2)
+  
+# Functions can get a little more complicated
+# if you want them to. Let's say we wanted a 
+# function that will give us TRUE if the number 
+# is negative, FALSE if the number is positive. 
+
+# In this case, we want to employ an "if else"
+# condition 
+
+is_negative = function(x) {
+  
+  if (x >= 0) {
+    
+    print(FALSE)
+    
+  } else {
+    
+    print(TRUE)
+    
+  }
+  
+}
+
+x = 2
+y = 0
+z = -5
+
+is_negative(x)
+is_negative(y)
+is_negative(z)
+
+
+
+
+
+
